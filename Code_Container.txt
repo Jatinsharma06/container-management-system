@@ -1,0 +1,179 @@
+#!/bin/bash
+
+# Unified Command Line Client
+
+# Function to display the main menu
+show_menu() {
+    echo "=========================="
+    echo " Multi-Tier Docker System"
+    echo "=========================="
+    echo "1. View Data"
+    echo "2. Insert Data"
+    echo "3. Delete Data"
+    echo "4. Update Data"
+    echo "5. Start All Docker Containers"
+    echo "6. Stop All Docker Containers"
+    echo "7. Monitor Running Containers"
+    echo "8. List All Containers"
+    echo "9. Start a Specific Container"
+    echo "10. Stop a Specific Container"
+    echo "11. Remove a Specific Container"
+    echo "12. Build and Run a Docker Container"
+    echo "13. Clean Up Unused Docker Resources"
+    echo "14. Exit"
+    echo "=========================="
+}
+
+# Data-related functions
+view_data() {
+    echo "Fetching data from backend..."
+    curl -s http://localhost:5000/view
+    echo
+    read -p "Press Enter to continue..."
+}
+
+insert_data() {
+    echo -n "Enter data to insert: "
+    read -r data
+    curl -s -X POST -H "Content-Type: application/json" -d "{\"data\":\"$data\"}" http://localhost:5000/insert
+    echo "Data inserted successfully!"
+    read -p "Press Enter to continue..."
+}
+
+delete_data() {
+    echo -n "Enter the ID of the data to delete: "
+    read -r id
+    curl -s -X DELETE http://localhost:5000/delete/$id
+    echo "Data with ID $id deleted successfully!"
+    read -p "Press Enter to continue..."
+}
+
+update_data() {
+    echo -n "Enter the ID of the data to update: "
+    read -r id
+    echo -n "Enter the new data: "
+    read -r new_data
+    curl -s -X PUT -H "Content-Type: application/json" -d "{\"data\":\"$new_data\"}" http://localhost:5000/update/$id
+    echo "Data with ID $id updated successfully!"
+    read -p "Press Enter to continue..."
+}
+
+# Docker-related functions
+start_all_containers() {
+    echo "Starting all Docker containers..."
+    docker-compose up -d
+    echo "Docker containers started successfully!"
+    read -p "Press Enter to continue..."
+}
+
+stop_all_containers() {
+    echo "Stopping all Docker containers..."
+    docker-compose down
+    echo "Docker containers stopped successfully!"
+    read -p "Press Enter to continue..."
+}
+
+monitor_containers() {
+    echo "Monitoring running containers..."
+    docker ps
+    read -p "Press Enter to continue..."
+}
+
+list_containers() {
+    docker ps -a
+    read -p "Press Enter to continue..."
+}
+
+start_container() {
+    read -p "Enter the container name or ID to start: " container_name
+    docker start "$container_name"
+    echo "Container '$container_name' started."
+    read -p "Press Enter to continue..."
+}
+
+stop_container() {
+    read -p "Enter the container name or ID to stop: " container_name
+    docker stop "$container_name"
+    echo "Container '$container_name' stopped."
+    read -p "Press Enter to continue..."
+}
+
+remove_container() {
+    read -p "Enter the container name or ID to remove: " container_name
+    docker rm "$container_name"
+    echo "Container '$container_name' removed."
+    read -p "Press Enter to continue..."
+}
+
+build_and_run_container() {
+    read -p "Enter the Dockerfile directory path: " dockerfile_path
+    read -p "Enter the Docker image name: " image_name
+    read -p "Enter the container name: " container_name
+    docker build -t "$image_name" "$dockerfile_path"
+    docker run -d --name "$container_name" "$image_name"
+    echo "Container '$container_name' started with image '$image_name'."
+    read -p "Press Enter to continue..."
+}
+
+cleanup_resources() {
+    docker system prune -f
+    echo "Unused Docker resources cleaned up."
+    read -p "Press Enter to continue..."
+}
+
+# Main logic
+while true; do
+    clear
+    show_menu
+    read -p "Enter your choice: " choice
+
+    case $choice in
+        1)
+            view_data
+            ;;
+        2)
+            insert_data
+            ;;
+        3)
+            delete_data
+            ;;
+        4)
+            update_data
+            ;;
+        5)
+            start_all_containers
+            ;;
+        6)
+            stop_all_containers
+            ;;
+        7)
+            monitor_containers
+            ;;
+        8)
+            list_containers
+            ;;
+        9)
+            start_container
+            ;;
+        10)
+            stop_container
+            ;;
+        11)
+            remove_container
+            ;;
+        12)
+            build_and_run_container
+            ;;
+        13)
+            cleanup_resources
+            ;;
+        14)
+            echo "Exiting Multi-Tier Docker System. Goodbye!"
+            exit 0
+            ;;
+        *)
+            echo "Invalid choice. Please try again."
+            sleep 2
+            ;;
+    esac
+done
