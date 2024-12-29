@@ -1,0 +1,19 @@
+==========================
+ Multi-Tier Docker System
+==========================
+1. View Data
+2. Insert Data
+3. Delete Data
+4. Update Data
+5. Start All Docker Containers
+6. Stop All Docker Containers
+7. Monitor Running Containers
+8. List All Containers
+9. Start a Specific Container
+10. Stop a Specific Container
+11. Remove a Specific Container
+12. Build and Run a Docker Container
+13. Clean Up Unused Docker Resources
+14. Exit
+==========================
+Enter your choice: _
